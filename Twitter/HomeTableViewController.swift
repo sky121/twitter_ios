@@ -19,7 +19,7 @@ class HomeTableViewController: UITableViewController {
         let myURL =  "https://api.twitter.com/1.1/statuses/home_timeline.json"
         let myParams = ["count": numberOfTweets]
         
-        TwitterAPICaller.client?.getDictionariesRequest(url: myURL, parameters: myParams, success: { (tweets: [NSDictionary]) in
+        TwitterAPICaller.client?.getDictionariesRequest(url: myURL, parameters: myParams as [String : Any], success: { (tweets: [NSDictionary]) in
             self.tweetArray.removeAll()
             for tweet in tweets{
                 self.tweetArray.append(tweet)
@@ -34,7 +34,7 @@ class HomeTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        //tableView.rowHeight = 400
         loadTweets()
         self.myRefreshControl.addTarget(self, action: #selector(loadTweets), for: .valueChanged)
         self.tableView.refreshControl = refreshControl
@@ -57,8 +57,8 @@ class HomeTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tweetCell", for: indexPath) as! TweetCellTableViewCell
         let user = tweetArray[indexPath.row]["user"] as! NSDictionary
-        cell.userNameLabel.text = user["name"] as! String
-        cell.tweetContent.text = tweetArray[indexPath.row]["text"] as! String
+        cell.userNameLabel.text = user["name"] as? String
+        cell.tweetContent.text = tweetArray[indexPath.row]["text"] as? String
         
         let imageURL = URL(string: (user["profile_image_url_https"] as? String)!)
         let data = try? Data(contentsOf: imageURL!)
@@ -81,7 +81,7 @@ class HomeTableViewController: UITableViewController {
         numberOfTweets = numberOfTweets + 20
         let myParams = ["count": numberOfTweets]
         
-        TwitterAPICaller.client?.getDictionariesRequest(url: myURL, parameters: myParams, success: { (tweets: [NSDictionary]) in
+        TwitterAPICaller.client?.getDictionariesRequest(url: myURL, parameters: myParams as [String : Any], success: { (tweets: [NSDictionary]) in
             self.tweetArray.removeAll()
             for tweet in tweets{
                 self.tweetArray.append(tweet)
